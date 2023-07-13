@@ -24,7 +24,7 @@ resource "azurerm_service_plan" "logic" {
 resource "azurerm_service_plan" "logic2" {
   for_each = toset(var.locations)
 
-  name = format("sp-logic-%s-%s-%s", random_id.environment_id.hex, var.environment, each.value)
+  name = format("sp-logic2-%s-%s-%s", random_id.environment_id.hex, var.environment, each.value)
 
   resource_group_name = azurerm_resource_group.logic[each.value].name
   location            = azurerm_resource_group.logic[each.value].location
