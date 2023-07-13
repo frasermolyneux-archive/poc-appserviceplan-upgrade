@@ -12,6 +12,10 @@ variable "locations" {
 
 variable "subscription_id" {}
 
+variable "address_spaces" {}
+
+variable "subnets" {}
+
 variable "tags" {
   default = {}
 }
