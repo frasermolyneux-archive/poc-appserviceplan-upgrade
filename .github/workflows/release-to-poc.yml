@@ -27,3 +27,49 @@ jobs:
           AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
           AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
           AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - id: terraform-output
+        shell: bash
+        run: |
+          cd terraform
+          echo "logic_apps=$(terraform output -json logic_apps)" >> $GITHUB_OUTPUT
+        env:
+          ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          ARM_USE_OIDC: true
+
+    outputs:
+      logic_apps: ${{ steps.terraform-output.outputs.logic_apps }}
+
+  apps-ci:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: frasermolyneux/actions/logic-app-ci@main
+      with:
+        logic-project: "logic-app"
+        src-folder: "src"
+
+  logic-app-deploy-poc:
+    environment: POC
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        func_app: ${{ fromJSON(needs.terraform-plan-and-apply-poc.outputs.logic_apps) }}
+
+    needs: [apps-ci, terraform-plan-and-apply-poc]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: frasermolyneux/actions/deploy-logic-app@main
+        with:
+          logic-app-artifact-name: "logic-app"
+          logic-app-name: ${{ matrix.func_app.name }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
