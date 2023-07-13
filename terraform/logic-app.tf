@@ -7,6 +7,7 @@ resource "azurerm_resource_group" "logic" {
   tags = var.tags
 }
 
+// Initiall app service plan - no zone balancing. Enabling zone balancing would destroy the app service plan and recreate it.
 resource "azurerm_service_plan" "logic" {
   for_each = toset(var.locations)
 
@@ -17,6 +18,22 @@ resource "azurerm_service_plan" "logic" {
 
   os_type  = "Windows"
   sku_name = "WS1"
+}
+
+// Second app service plan - this one with zone balancing enabled
+resource "azurerm_service_plan" "logic2" {
+  for_each = toset(var.locations)
+
+  name = format("sp-logic-%s-%s-%s", random_id.environment_id.hex, var.environment, each.value)
+
+  resource_group_name = azurerm_resource_group.logic[each.value].name
+  location            = azurerm_resource_group.logic[each.value].location
+
+  os_type  = "Windows"
+  sku_name = "WS1"
+
+  zone_balancing_enabled = true
+  worker_count           = 3
 }
 
 resource "azurerm_monitor_diagnostic_setting" "logic_svcplan" {
