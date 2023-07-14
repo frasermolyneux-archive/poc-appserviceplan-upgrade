@@ -195,6 +195,8 @@ resource "azurerm_logic_app_standard" "logica" {
     "WEBSITE_NODE_DEFAULT_VERSION"          = "~16"
     "WEBSITE_CONTENTOVERVNET"               = "1"
     "WEBSITE_RUN_FROM_PACKAGE"              = "1"
+    "Workflows.Stateful1.FlowState"         = "Enabled"
+    "Workflows.Stateful2.FlowState"         = "Enabled"
   }
 
   site_config {
