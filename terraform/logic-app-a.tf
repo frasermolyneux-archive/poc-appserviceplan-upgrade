@@ -169,7 +169,7 @@ resource "azurerm_storage_share" "logica" {
   quota                = 50
 }
 
-resource "azurerm_logica_app_standard" "logica" {
+resource "azurerm_logic_app_standard" "logica" {
   for_each = toset(var.locations)
 
   name = format("logica-%s-%s-%s", random_id.environment_id.hex, var.environment, each.value)

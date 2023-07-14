@@ -169,7 +169,7 @@ resource "azurerm_storage_share" "logicb" {
   quota                = 50
 }
 
-resource "azurerm_logicb_app_standard" "logicb" {
+resource "azurerm_logic_app_standard" "logicb" {
   for_each = toset(var.locations)
 
   name = format("logicb-%s-%s-%s", random_id.environment_id.hex, var.environment, each.value)
