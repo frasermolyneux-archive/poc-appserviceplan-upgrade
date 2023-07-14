@@ -184,7 +184,7 @@ resource "azurerm_logic_app_standard" "logicb" {
   storage_account_share_name = azurerm_storage_share.logicb[each.value].name
   app_service_plan_id        = azurerm_service_plan.logicb[each.value].id
 
-  virtual_network_subnet_id = azurerm_subnet.app_01[each.value].id
+  virtual_network_subnet_id = azurerm_subnet.app_02[each.value].id
 
   https_only = true
 
