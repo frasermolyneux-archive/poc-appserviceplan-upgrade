@@ -41,7 +41,7 @@ resource "azurerm_monitor_diagnostic_setting" "logica_svcplan" {
 resource "azurerm_storage_account" "logica" {
   for_each = toset(var.locations)
 
-  name = format("sala%s", lower(random_string.location[each.value].result))
+  name = format("sala%sa", lower(random_string.location[each.value].result))
 
   resource_group_name = azurerm_resource_group.logica[each.value].name
   location            = azurerm_resource_group.logica[each.value].location
